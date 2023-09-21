@@ -1,6 +1,7 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import TextInput from "../../utils/TextInput";
 
 const CreateJob = ({ isOpen, closeModal }) => {
   return (
@@ -29,28 +30,37 @@ const CreateJob = ({ isOpen, closeModal }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
-                  Payment successful
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    Your payment has been successfully submitted. We’ve sent you
-                    an email with all of the details of your order.
-                  </p>
+              <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-[10px] bg-white p-8 align-middle shadow-xl border border-mercury transition-all">
+                <div className="flex justify-between items-center text-shark">
+                  <h1 className="text-xl font-normal leading-7">
+                    Create a job
+                  </h1>
+                  <h3 className="text-base font-medium leading-6">Step 1</h3>
                 </div>
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={closeModal}
-                  >
-                    Got it, thanks!
-                  </button>
+                <TextInput
+                  label="Job title"
+                  placeholder="ex. UX UI Designer"
+                  isRequired
+                />
+                <TextInput
+                  label="Company name"
+                  placeholder="ex. Google"
+                  isRequired
+                />
+                <TextInput
+                  label="Industry"
+                  placeholder="ex. Information Technology"
+                  isRequired
+                />
+                <div className="flex justify-between items-center gap-6">
+                  <TextInput
+                    label="Location"
+                    placeholder="ex. Chennai"
+                  />
+                  <TextInput
+                    label="Remote type"
+                    placeholder="ex. In-office"
+                  />
                 </div>
               </Dialog.Panel>
             </Transition.Child>
