@@ -1,12 +1,23 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import TextInput from "../../utils/TextInput";
+import TextInput from "../Inputs/TextInput";
+import FilledButton from "../Inputs/Buttons/FilledButton";
+import { useModal } from "../../contexts/ModalContext";
 
-const CreateJob = ({ isOpen, closeModal }) => {
+const CreateJobStep1 = () => {
+  const { isModal1Open, setIsModal1Open, setIsModal2Open } = useModal();
+
+  const handleNextClick = () => {
+    setIsModal1Open(false);
+    setTimeout(() => {
+      setIsModal2Open(true);
+    }, 300);
+  };
+
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+    <Transition appear show={isModal1Open} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={() => setIsModal1Open(false)}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -53,14 +64,11 @@ const CreateJob = ({ isOpen, closeModal }) => {
                   isRequired
                 />
                 <div className="flex justify-between items-center gap-6">
-                  <TextInput
-                    label="Location"
-                    placeholder="ex. Chennai"
-                  />
-                  <TextInput
-                    label="Remote type"
-                    placeholder="ex. In-office"
-                  />
+                  <TextInput label="Location" placeholder="ex. Chennai" />
+                  <TextInput label="Remote type" placeholder="ex. In-office" />
+                </div>
+                <div className="text-right mt-24">
+                  <FilledButton onClick={handleNextClick}>Next</FilledButton>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -71,4 +79,4 @@ const CreateJob = ({ isOpen, closeModal }) => {
   );
 };
 
-export default CreateJob;
+export default CreateJobStep1;
