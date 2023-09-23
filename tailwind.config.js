@@ -10,7 +10,8 @@ module.exports = {
         roman: "#D86161",
         boulder: "#7A7A7A",
         primary: "#1597E4",
-        shark: '#182021'
+        shark: '#182021',
+        iron: "#DADEDF"
       },
     },
   },
