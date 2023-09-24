@@ -9,3 +9,13 @@ body {
     font-family: 'Poppins', sans-serif;
     background: #d8d8d8;
 }
+
+.para {
+    @apply text-base font-normal leading-6;
+}
+.filled_btn {
+    @apply bg-primary shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] text-white;
+}
+.outlined_btn {
+    @apply bg-white border border-primary text-primary rounded-[5px];
+}
