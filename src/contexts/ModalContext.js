@@ -6,6 +6,7 @@ export const ModalProvider = ({ children }) => {
   const [isModal1Open, setIsModal1Open] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [formData, setFormData] = useState({});
+  const [currentJob, setCurrentJob] = useState(null);
 
   const updateFormData = (newData) => {
     setFormData((prevData) => ({ ...prevData, ...newData }));
@@ -20,6 +21,8 @@ export const ModalProvider = ({ children }) => {
         setIsModal2Open,
         formData,
         updateFormData,
+        currentJob,
+        setCurrentJob,
       }}
     >
       {children}

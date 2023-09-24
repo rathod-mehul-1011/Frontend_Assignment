@@ -1,14 +1,35 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import CreateJobStep1 from "./components/modals/CreateJobStep1";
 import Button from "./components/Inputs/Button";
 import { useModal } from "./contexts/ModalContext";
 import CreateJobStep2 from "./components/modals/CreateJobStep2";
 import JobCard from "./components/JobCard";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const App = () => {
   const { setIsModal1Open } = useModal();
+
+  const [jobs, setJobs] = useState([]);
+
+  const handleJobDeleted = async (jobId) => {
+    setJobs((currentJobs) => currentJobs.filter((job) => job.id !== jobId));
+  };
+
+  const getJobs = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/jobs`);
+      if (response.status === 200) {
+        setJobs(response.data);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch jobs");
+    }
+  };
+  useEffect(() => {
+    getJobs();
+  }, []);
 
   return (
     <Fragment>
@@ -18,11 +39,13 @@ const App = () => {
           Create Job
         </Button>
         <div className="grid grid-cols-2 gap-x-[83.118px]">
-          <JobCard />
+          {jobs.map((job) => (
+            <JobCard key={job.id} job={job} onJobDeleted={handleJobDeleted} />
+          ))}
         </div>
       </div>
       <CreateJobStep1 />
-      <CreateJobStep2 />
+      <CreateJobStep2 getJobs={getJobs} />
     </Fragment>
   );
 };

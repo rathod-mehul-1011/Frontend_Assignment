@@ -6,8 +6,13 @@ import Button from "../Inputs/Button";
 import { useModal } from "../../contexts/ModalContext";
 
 const CreateJobStep1 = () => {
-  const { isModal1Open, setIsModal1Open, setIsModal2Open, updateFormData } =
-    useModal();
+  const {
+    isModal1Open,
+    setIsModal1Open,
+    setIsModal2Open,
+    updateFormData,
+    currentJob,
+  } = useModal();
   const [errors, setErrors] = useState({});
 
   const jobTitleRef = useRef();
@@ -100,6 +105,7 @@ const CreateJobStep1 = () => {
                   label="Job title"
                   placeholder="ex. UX UI Designer"
                   ref={jobTitleRef}
+                  defaultValue={currentJob ? currentJob?.jobTitle : ''}
                   error={errors.jobTitle}
                   isRequired
                 />
@@ -107,6 +113,7 @@ const CreateJobStep1 = () => {
                   label="Company name"
                   placeholder="ex. Google"
                   ref={companyNameRef}
+                  defaultValue={currentJob ? currentJob?.companyName : ''}
                   error={errors.companyName}
                   isRequired
                 />
@@ -114,6 +121,7 @@ const CreateJobStep1 = () => {
                   label="Industry"
                   placeholder="ex. Information Technology"
                   ref={industryRef}
+                  defaultValue={currentJob ? currentJob?.industry : ''}
                   error={errors.industry}
                   isRequired
                 />
@@ -122,15 +130,19 @@ const CreateJobStep1 = () => {
                     label="Location"
                     placeholder="ex. Chennai"
                     ref={locationRef}
+                    defaultValue={currentJob ? currentJob?.location : ''}
                   />
                   <TextInput
                     label="Remote type"
                     placeholder="ex. In-office"
                     ref={remoteTypeRef}
+                    defaultValue={currentJob ? currentJob?.remoteType : ''}
                   />
                 </div>
                 <div className="text-right mt-24">
-                  <Button className="filled_btn" onClick={handleNextClick}>Next</Button>
+                  <Button className="filled_btn" onClick={handleNextClick}>
+                    Next
+                  </Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

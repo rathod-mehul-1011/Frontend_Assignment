@@ -7,9 +7,10 @@ import { useModal } from "../../contexts/ModalContext";
 import RadioButton from "../Inputs/RadioButton";
 import Label from "../Inputs/Label";
 import axios from "axios";
+import { toast } from "react-toastify";
 
-const CreateJobStep2 = () => {
-  const { isModal2Open, setIsModal2Open, updateFormData, formData } =
+const CreateJobStep2 = ({ getJobs }) => {
+  const { isModal2Open, setIsModal2Open, updateFormData, formData, currentJob } =
     useModal();
 
   const experienceMinRef = useRef();
@@ -38,7 +39,7 @@ const CreateJobStep2 = () => {
       applyType,
     };
     updateFormData(modalTwoData);
-    sendFormData(formData);
+    currentJob ? handleUpdate(currentJob?.id, formData) : sendFormData(formData);
   };
 
   const handleKeyPress = (e) => {
@@ -80,14 +81,32 @@ const CreateJobStep2 = () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/jobs`, data);
       
-      console.log(response);
-      setIsModal2Open(false);
+      if(response.status === 201) {
+        toast.success(response.statusText)
+        setIsModal2Open(false);
+        getJobs()
+      }
     } catch (error) {
       console.error("There was an error sending the data:", error);
+      toast.error("Something went wrong")
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleUpdate = async (jobId, data) => {
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/jobs/${jobId}`, data)
+      console.log('response', response)
+      if(response.status === 200) {
+        toast.success("Job Updated successfully")
+        setIsModal2Open(false)
+        getJobs()
+      }
+    } catch (error) {
+      toast.error("Failed to update job")
+    }
+  }
 
   return (
     <Transition appear show={isModal2Open} as={Fragment}>
@@ -131,6 +150,7 @@ const CreateJobStep2 = () => {
                     containerClass="w-full"
                     label="Experience"
                     ref={experienceMinRef}
+                    defaultValue={currentJob ? currentJob?.experienceMin : ''}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                     placeholder="Minimum"
@@ -140,6 +160,7 @@ const CreateJobStep2 = () => {
                     label=""
                     placeholder="Maximum"
                     ref={experienceMaxRef}
+                    defaultValue={currentJob ? currentJob?.experienceMax : ''}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                   />
@@ -150,6 +171,7 @@ const CreateJobStep2 = () => {
                     label="Salary"
                     placeholder="Minimum"
                     ref={salaryMinRef}
+                    defaultValue={currentJob ? currentJob?.salaryMin : ''}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                   />
@@ -158,6 +180,7 @@ const CreateJobStep2 = () => {
                     label=""
                     placeholder="Maximum"
                     ref={salaryMaxRef}
+                    defaultValue={currentJob ? currentJob?.salaryMax : ''}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                   />
@@ -166,6 +189,7 @@ const CreateJobStep2 = () => {
                   label="Total employee"
                   placeholder="ex. 100"
                   ref={totalEmployeeRef}
+                  defaultValue={currentJob ? currentJob?.totalEmployee : ''}
                   onKeyPress={handleKeyPress}
                   onPaste={handlePaste}
                 />
@@ -175,6 +199,7 @@ const CreateJobStep2 = () => {
                     <RadioButton
                       value={"Quick apply"}
                       name={"applyType"}
+                      defaultChecked={currentJob?.applyType === "Quick apply"}
                       onChange={() => {
                         applyTypeRef.current = "Quick apply";
                       }}
@@ -182,6 +207,7 @@ const CreateJobStep2 = () => {
                     <RadioButton
                       value={"External apply"}
                       name={"applyType"}
+                      defaultChecked={currentJob?.applyType === "External apply"}
                       onChange={() => {
                         applyTypeRef.current = "External apply";
                       }}
