@@ -34,11 +34,11 @@ const App = () => {
   return (
     <Fragment>
       <ToastContainer />
-      <div className="max-w-[1743.12px] mx-auto pt-5">
+      <div className="container mx-auto pt-5 px-5 md:px-0">
         <Button className="filled_btn" onClick={() => setIsModal1Open(true)}>
           Create Job
         </Button>
-        <div className="grid grid-cols-2 gap-x-[83.118px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-[83.118px]">
           {jobs.map((job) => (
             <JobCard key={job.id} job={job} onJobDeleted={handleJobDeleted} />
           ))}

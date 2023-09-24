@@ -12,6 +12,7 @@ const CreateJobStep1 = () => {
     setIsModal2Open,
     updateFormData,
     currentJob,
+    setCurrentJob
   } = useModal();
   const [errors, setErrors] = useState({});
 
@@ -69,7 +70,10 @@ const CreateJobStep1 = () => {
       <Dialog
         as="div"
         className="relative z-10"
-        onClose={() => setIsModal1Open(false)}
+        onClose={() => {
+          setIsModal1Open(false);
+          setCurrentJob(null)
+        }}
       >
         <Transition.Child
           as={Fragment}
@@ -105,7 +109,7 @@ const CreateJobStep1 = () => {
                   label="Job title"
                   placeholder="ex. UX UI Designer"
                   ref={jobTitleRef}
-                  defaultValue={currentJob ? currentJob?.jobTitle : ''}
+                  defaultValue={currentJob ? currentJob?.jobTitle : ""}
                   error={errors.jobTitle}
                   isRequired
                 />
@@ -113,7 +117,7 @@ const CreateJobStep1 = () => {
                   label="Company name"
                   placeholder="ex. Google"
                   ref={companyNameRef}
-                  defaultValue={currentJob ? currentJob?.companyName : ''}
+                  defaultValue={currentJob ? currentJob?.companyName : ""}
                   error={errors.companyName}
                   isRequired
                 />
@@ -121,7 +125,7 @@ const CreateJobStep1 = () => {
                   label="Industry"
                   placeholder="ex. Information Technology"
                   ref={industryRef}
-                  defaultValue={currentJob ? currentJob?.industry : ''}
+                  defaultValue={currentJob ? currentJob?.industry : ""}
                   error={errors.industry}
                   isRequired
                 />
@@ -130,13 +134,13 @@ const CreateJobStep1 = () => {
                     label="Location"
                     placeholder="ex. Chennai"
                     ref={locationRef}
-                    defaultValue={currentJob ? currentJob?.location : ''}
+                    defaultValue={currentJob ? currentJob?.location : ""}
                   />
                   <TextInput
                     label="Remote type"
                     placeholder="ex. In-office"
                     ref={remoteTypeRef}
-                    defaultValue={currentJob ? currentJob?.remoteType : ''}
+                    defaultValue={currentJob ? currentJob?.remoteType : ""}
                   />
                 </div>
                 <div className="text-right mt-24">

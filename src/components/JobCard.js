@@ -12,6 +12,9 @@ const JobCard = (props) => {
   const { setIsModal1Open, setCurrentJob } = useModal();
 
   const handleDeleteJob = async (jobId) => {
+    if (!window.confirm("Are you sure you want to delete")) {
+      return;
+    }
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_API_URL}/jobs/${jobId}`
@@ -26,7 +29,7 @@ const JobCard = (props) => {
   };
 
   return (
-    <div className="px-6 py-4 bg-white my-12 rounded-xl border border-iron flex items-start gap-2">
+    <div className="px-6 py-4 bg-white my-6 md:my-12 rounded-xl border border-iron flex items-start gap-2">
       <img src={NetflixSymbol} className="h-12 w-12 rounded-[5px]" alt="" />
       <div>
         <h1 className="text-2xl font-normal leading-8 text-black">
@@ -38,14 +41,14 @@ const JobCard = (props) => {
         <span className="para text-boulder">
           {job.location} ({job.remoteType})
         </span>
-        <p className="para mb-2 mt-6">Part-Time (9.00 am - 5.00 pm IST)</p>
-        <p className="para mb-2">
+        <p className="para mb-1 md:mb-2 mt-3 md:mt-6">Part-Time (9.00 am - 5.00 pm IST)</p>
+        <p className="para mb-1 md:mb-2">
           Experience ({job.experienceMin} - {job.experienceMax} years)
         </p>
-        <p className="para mb-2">
+        <p className="para mb-1 md:mb-2">
           INR (₹) {job.salaryMin} - {job.salaryMax} / Month
         </p>
-        <p className="para mb-6">{job.totalEmployee} employees</p>
+        <p className="para mb-3 md:mb-6">{job.totalEmployee} employees</p>
         {job.applyType === "Quick apply" ? (
           <Button className="filled_btn">Apply Now</Button>
         ) : (

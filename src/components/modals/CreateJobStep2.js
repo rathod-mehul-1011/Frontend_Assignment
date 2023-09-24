@@ -10,8 +10,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const CreateJobStep2 = ({ getJobs }) => {
-  const { isModal2Open, setIsModal2Open, updateFormData, formData, currentJob } =
-    useModal();
+  const {
+    isModal2Open,
+    setIsModal2Open,
+    updateFormData,
+    formData,
+    currentJob,
+    setCurrentJob
+  } = useModal();
 
   const experienceMinRef = useRef();
   const experienceMaxRef = useRef();
@@ -21,26 +27,6 @@ const CreateJobStep2 = ({ getJobs }) => {
   const applyTypeRef = useRef();
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleSaveClick = () => {
-    const experienceMin = experienceMinRef.current.value;
-    const experienceMax = experienceMaxRef.current.value;
-    const salaryMin = salaryMinRef.current.value;
-    const salaryMax = salaryMaxRef.current.value;
-    const totalEmployee = totalEmployeeRef.current.value;
-    const applyType = applyTypeRef.current;
-
-    const modalTwoData = {
-      experienceMin,
-      experienceMax,
-      salaryMin,
-      salaryMax,
-      totalEmployee,
-      applyType,
-    };
-    updateFormData(modalTwoData);
-    currentJob ? handleUpdate(currentJob?.id, formData) : sendFormData(formData);
-  };
 
   const handleKeyPress = (e) => {
     const keyCode = e.which; // Get key code of key pressed
@@ -58,37 +44,24 @@ const CreateJobStep2 = ({ getJobs }) => {
     }
   };
 
-  const isDataValid = () => {
-    // Add your validation logic. This is a simple example.
-    return (
-      formData.experienceMin &&
-      formData.experienceMax &&
-      formData.salaryMin &&
-      formData.salaryMax &&
-      formData.totalEmployee &&
-      formData.applyType
-    );
-  };
-
   const sendFormData = async (data) => {
-    if (!isDataValid()) {
-      console.error("Data is not valid for submission:", data);
-      return; // Don't proceed if data is not valid
-    }
     if (isLoading) return;
 
     setIsLoading(true);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/jobs`, data);
-      
-      if(response.status === 201) {
-        toast.success(response.statusText)
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/jobs`,
+        data
+      );
+
+      if (response.status === 201) {
+        toast.success(response.statusText);
         setIsModal2Open(false);
-        getJobs()
+        setCurrentJob(null)
+        getJobs();
       }
     } catch (error) {
-      console.error("There was an error sending the data:", error);
-      toast.error("Something went wrong")
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -96,24 +69,53 @@ const CreateJobStep2 = ({ getJobs }) => {
 
   const handleUpdate = async (jobId, data) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/jobs/${jobId}`, data)
-      console.log('response', response)
-      if(response.status === 200) {
-        toast.success("Job Updated successfully")
-        setIsModal2Open(false)
-        getJobs()
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/jobs/${jobId}`,
+        data
+      );
+      if (response.status === 200) {
+        toast.success("Job Updated successfully");
+        setIsModal2Open(false);
+        setCurrentJob(null)
+        getJobs();
       }
     } catch (error) {
-      toast.error("Failed to update job")
+      toast.error("Failed to update job");
     }
-  }
+  };
+
+  const handleSaveClick = () => {
+    const experienceMin = experienceMinRef.current.value;
+    const experienceMax = experienceMaxRef.current.value;
+    const salaryMin = salaryMinRef.current.value;
+    const salaryMax = salaryMaxRef.current.value;
+    const totalEmployee = totalEmployeeRef.current.value;
+    const applyType = applyTypeRef.current;
+
+    const modalTwoData = {
+      experienceMin,
+      experienceMax,
+      salaryMin,
+      salaryMax,
+      totalEmployee,
+      applyType,
+    };
+    const mergedData = { ...formData, ...modalTwoData };
+    updateFormData(modalTwoData);
+    currentJob
+      ? handleUpdate(currentJob?.id, mergedData)
+      : sendFormData(mergedData);
+  };
 
   return (
     <Transition appear show={isModal2Open} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
-        onClose={() => setIsModal2Open(false)}
+        onClose={() => {
+          setIsModal2Open(false);
+          setCurrentJob(null)
+        }}
       >
         <Transition.Child
           as={Fragment}
@@ -150,7 +152,7 @@ const CreateJobStep2 = ({ getJobs }) => {
                     containerClass="w-full"
                     label="Experience"
                     ref={experienceMinRef}
-                    defaultValue={currentJob ? currentJob?.experienceMin : ''}
+                    defaultValue={currentJob ? currentJob?.experienceMin : ""}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                     placeholder="Minimum"
@@ -160,7 +162,7 @@ const CreateJobStep2 = ({ getJobs }) => {
                     label=""
                     placeholder="Maximum"
                     ref={experienceMaxRef}
-                    defaultValue={currentJob ? currentJob?.experienceMax : ''}
+                    defaultValue={currentJob ? currentJob?.experienceMax : ""}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                   />
@@ -171,7 +173,7 @@ const CreateJobStep2 = ({ getJobs }) => {
                     label="Salary"
                     placeholder="Minimum"
                     ref={salaryMinRef}
-                    defaultValue={currentJob ? currentJob?.salaryMin : ''}
+                    defaultValue={currentJob ? currentJob?.salaryMin : ""}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                   />
@@ -180,7 +182,7 @@ const CreateJobStep2 = ({ getJobs }) => {
                     label=""
                     placeholder="Maximum"
                     ref={salaryMaxRef}
-                    defaultValue={currentJob ? currentJob?.salaryMax : ''}
+                    defaultValue={currentJob ? currentJob?.salaryMax : ""}
                     onKeyPress={handleKeyPress}
                     onPaste={handlePaste}
                   />
@@ -189,7 +191,7 @@ const CreateJobStep2 = ({ getJobs }) => {
                   label="Total employee"
                   placeholder="ex. 100"
                   ref={totalEmployeeRef}
-                  defaultValue={currentJob ? currentJob?.totalEmployee : ''}
+                  defaultValue={currentJob ? currentJob?.totalEmployee : ""}
                   onKeyPress={handleKeyPress}
                   onPaste={handlePaste}
                 />
@@ -207,7 +209,9 @@ const CreateJobStep2 = ({ getJobs }) => {
                     <RadioButton
                       value={"External apply"}
                       name={"applyType"}
-                      defaultChecked={currentJob?.applyType === "External apply"}
+                      defaultChecked={
+                        currentJob?.applyType === "External apply"
+                      }
                       onChange={() => {
                         applyTypeRef.current = "External apply";
                       }}
@@ -215,7 +219,9 @@ const CreateJobStep2 = ({ getJobs }) => {
                   </div>
                 </div>
                 <div className="text-right mt-24">
-                  <Button className="filled_btn" onClick={handleSaveClick}>Save</Button>
+                  <Button className="filled_btn" onClick={handleSaveClick}>
+                    Save
+                  </Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
