@@ -106,7 +106,6 @@ const CreateJobStep2 = ({ getJobs }) => {
       applyType,
     };
     const mergedData = { ...formData, ...modalTwoData };
-    updateFormData(modalTwoData);
     currentJob
       ? handleUpdate(currentJob?.id, mergedData)
       : sendFormData(mergedData);
